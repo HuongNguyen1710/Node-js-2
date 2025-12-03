@@ -1,0 +1,54 @@
+<h3 class="mb-3">Quản lý người dùng</h3>
+
+<div class="card">
+  <div class="card-body">
+    <p class="text-muted">
+      Danh sách tất cả tài khoản (customer + admin) trong hệ thống.
+    </p>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Provider</th>
+            <th>Ngày tạo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!users || users.length === 0) { %>
+            <tr>
+              <td colspan="6" class="text-center text-muted">
+                Chưa có người dùng nào.
+              </td>
+            </tr>
+          <% } else { %>
+            <% users.forEach((u, idx) => { %>
+              <tr>
+                <td><%= idx + 1 %></td>
+                <td><%= u.fullName || 'Chưa cập nhật' %></td>
+                <td><%= u.email %></td>
+                <td>
+                  <% if (u.role === 'admin') { %>
+                    <span class="badge bg-danger">Admin</span>
+                  <% } else { %>
+                    <span class="badge bg-secondary">Customer</span>
+                  <% } %>
+                </td>
+                <td><%= u.provider || 'local' %></td>
+                <td>
+                  <%= u.createdAt
+                        ? new Date(u.createdAt).toLocaleString("vi-VN")
+                        : '' %>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

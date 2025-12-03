@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(expressLayouts);
-app.set("layout", "layout");
+app.set("layout", "layout"); // layout mặc định cho site user
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -25,38 +25,45 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 
 // Session
-app.use(session({
-  secret: process.env.SESSION_SECRET || "mobile-store-secret",
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "mobile-store-secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // Middleware set biến dùng chung cho view
 app.use((req, res, next) => {
   if (!req.session.cart) {
     req.session.cart = [];
   }
-  res.locals.cartCount = req.session.cart.reduce((sum, item) => sum + item.qty, 0);
+  res.locals.cartCount = req.session.cart.reduce(
+    (sum, item) => sum + item.qty,
+    0
+  );
   res.locals.currentUser = req.session.user || null;
   next();
 });
 
-// ===== ROUTES =====
+// Routes
 const indexRoutes = require("./routes/index.routes");
 const productRoutes = require("./routes/product.routes");
 const cartRoutes = require("./routes/cart.routes");
 const authRoutes = require("./routes/auth.routes");
 const orderRoutes = require("./routes/order.routes");
-const adminRoutes = require("./routes/admin.routes");   // <-- THÊM NÈ !!!
+const adminRoutes = require("./routes/admin.routes");
 
 app.use("/", indexRoutes);
 app.use("/products", productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/auth", authRoutes);
 app.use("/orders", orderRoutes);
-app.use("/admin", adminRoutes);   // <-- THÊM NÈ !!!
+app.use("/admin", adminRoutes); // 👈 route admin
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 
-// ===== START SERVER =====
+
+// Start server
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });

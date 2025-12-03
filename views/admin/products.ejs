@@ -1,0 +1,106 @@
+<h3 class="mb-3 d-flex justify-content-between align-items-center">
+  <span>Quản lý sản phẩm</span>
+  <a href="/admin/products/new" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-lg"></i> Thêm sản phẩm
+  </a>
+</h3>
+
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Sản phẩm</th>
+            <th>Thương hiệu</th>
+            <th>Danh mục</th>
+            <th>Giá cơ bản</th>
+            <th>Tồn kho</th>
+            <th>Flags</th>
+            <th>Trạng thái</th>
+            <th class="text-end">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!products || products.length === 0) { %>
+            <tr>
+              <td colspan="9" class="text-center text-muted">
+                Chưa có sản phẩm nào.
+              </td>
+            </tr>
+          <% } else { %>
+            <% products.forEach((p, idx) => { %>
+              <tr>
+                <td><%= idx + 1 %></td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <% if (p.thumbnail) { %>
+                      <img src="<%= p.thumbnail %>" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:6px;margin-right:8px;">
+                    <% } %>
+                    <div>
+                      <div class="fw-semibold"><%= p.name %></div>
+                      <% if (p.shortDescription) { %>
+                        <div class="text-muted" style="font-size:.8rem;">
+                          <%= p.shortDescription %>
+                        </div>
+                      <% } %>
+                    </div>
+                  </div>
+                </td>
+                <td><%= p.brand || '-' %></td>
+                <td><%= p.category || '-' %></td>
+                <td>
+                  <%= (p.basePriceComputed || 0).toLocaleString("vi-VN") %> ₫
+                </td>
+                <td><%= typeof p.totalStock !== "undefined" ? p.totalStock : 0 %></td>
+                <td>
+                  <% if (p.isFeatured) { %>
+                    <span class="badge bg-info me-1">Featured</span>
+                  <% } %>
+                  <% if (p.isNew) { %>
+                    <span class="badge bg-success me-1">New</span>
+                  <% } %>
+                  <% if (p.isBestSeller) { %>
+                    <span class="badge bg-warning text-dark me-1">Best seller</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (p.isActive) { %>
+                    <span class="badge bg-success">Hiển thị</span>
+                  <% } else { %>
+                    <span class="badge bg-secondary">Đã ẩn</span>
+                  <% } %>
+                </td>
+                <td class="text-end">
+                  <form method="POST" action="/admin/products/<%= p._id %>/toggle-visibility" class="d-inline">
+                    <button class="btn btn-sm <%= p.isActive ? 'btn-outline-warning' : 'btn-outline-success' %>">
+                      <%= p.isActive ? 'Ẩn' : 'Hiển thị' %>
+                    </button>
+                  </form>
+
+                  <a href="/admin/products/<%= p._id %>/edit" class="btn btn-sm btn-outline-primary ms-1">
+                    Sửa
+                  </a>
+
+                  <form method="POST"
+                        action="/admin/products/<%= p._id %>/delete"
+                        class="d-inline"
+                        onsubmit="return confirm('Xóa sản phẩm này?');">
+                    <button class="btn btn-sm btn-outline-danger ms-1">
+                      Xóa
+                    </button>
+                  </form>
+
+                  <a href="/products/<%= p._id %>" target="_blank" class="btn btn-sm btn-outline-secondary ms-1">
+                    Xem ngoài site
+                  </a>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

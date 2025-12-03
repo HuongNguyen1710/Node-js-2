@@ -1,0 +1,99 @@
+<h3 class="mb-3 d-flex justify-content-between align-items-center">
+  <span><%= isEdit ? "Sửa sản phẩm" : "Thêm sản phẩm" %></span>
+  <a href="/admin/products" class="btn btn-outline-secondary btn-sm">Quay lại</a>
+</h3>
+
+<div class="card">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data"
+      action="<%= isEdit ? ('/admin/products/' + product._id + '/edit') : '/admin/products' %>">
+
+      <div class="mb-3">
+        <label class="form-label">Tên sản phẩm</label>
+        <input type="text" name="name" class="form-control" required value="<%= product.name || '' %>">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Thương hiệu</label>
+        <input type="text" name="brand" class="form-control" value="<%= product.brand || '' %>">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Danh mục</label>
+        <input type="text" name="category" class="form-control" value="<%= product.category || '' %>">
+      </div>
+
+      <!-- Upload thumbnail -->
+      <div class="mb-3">
+        <label class="form-label">Thumbnail (ảnh từ máy)</label>
+        <input type="file" name="thumbnailFile" accept="image/*" class="form-control">
+
+        <% if (product.thumbnail) { %>
+          <img src="<%= product.thumbnail %>" class="mt-2" style="height: 80px;">
+        <% } %>
+      </div>
+
+      <!-- Upload nhiều ảnh -->
+      <div class="mb-3">
+        <label class="form-label">Album ảnh (nhiều ảnh)</label>
+        <input type="file" name="imageFiles" accept="image/*" multiple class="form-control">
+
+        <% if (product.images) { %>
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <% product.images.forEach(img => { %>
+              <img src="<%= img %>" style="width:80px;height:80px;object-fit:cover;">
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <hr>
+
+      <h5>Biến thể</h5>
+<div class="row">
+  <div class="col-md-4 mb-3">
+    <label class="form-label">Tên biến thể</label>
+    <input type="text" name="variantName" class="form-control"
+      value="<%= firstVariant ? firstVariant.name : '' %>">
+  </div>
+  <div class="col-md-4 mb-3">
+    <label class="form-label">SKU</label>
+    <input type="text" name="variantSku" class="form-control"
+      value="<%= firstVariant ? firstVariant.sku : '' %>">
+  </div>
+  <div class="col-md-2 mb-3">
+    <label class="form-label">Giá</label>
+    <input type="number" name="variantPrice" class="form-control"
+      value="<%= firstVariant ? firstVariant.price : '' %>">
+  </div>
+  <div class="col-md-2 mb-3">
+    <label class="form-label">Kho</label>
+    <input type="number" name="variantStock" class="form-control"
+      value="<%= firstVariant ? firstVariant.stock : '' %>">
+  </div>
+</div>
+
+
+      <hr>
+
+      <h5>Mô tả</h5>
+      <div class="mb-3">
+        <label class="form-label">Mô tả ngắn</label>
+        <input type="text" name="shortDescription" class="form-control"
+          value="<%= product.shortDescription || '' %>">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Mô tả chi tiết</label>
+        <textarea name="description" class="form-control" rows="4"><%= product.description || '' %></textarea>
+      </div>
+
+      <hr>
+
+      <button class="btn btn-primary">
+        <%= isEdit ? "Lưu thay đổi" : "Tạo sản phẩm" %>
+      </button>
+
+    </form>
+  </div>
+</div>

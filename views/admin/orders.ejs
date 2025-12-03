@@ -1,0 +1,68 @@
+<h4 class="mb-3">Quản lý đơn hàng</h4>
+
+<div class="card">
+  <div class="card-body">
+    <p class="text-muted">
+      Danh sách đơn hàng của khách (bao gồm pending / processing / completed / cancelled).
+    </p>
+
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Mã đơn</th>
+            <th>Khách hàng</th>
+            <th>Email</th>
+            <th>Ngày tạo</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (orders && orders.length > 0) { %>
+            <% orders.forEach(o => { %>
+              <tr>
+                <td><%= o._id.toString().slice(-6).toUpperCase() %></td>
+                <td>
+                  <% if (o.user && o.user.fullName) { %>
+                    <%= o.user.fullName %>
+                  <% } else if (o.shippingAddress && o.shippingAddress.fullName) { %>
+                    <%= o.shippingAddress.fullName %>
+                  <% } else { %>
+                    Khách
+                  <% } %>
+                </td>
+                <td><%= o.user && o.user.email ? o.user.email : '' %></td>
+                <td>
+                  <%= o.createdAt
+                        ? new Date(o.createdAt).toLocaleString("vi-VN")
+                        : '' %>
+                </td>
+                <td><%= o.totalAmount ? o.totalAmount.toLocaleString("vi-VN") + " ₫" : "" %></td>
+                <td>
+                  <% if (o.status === "pending") { %>
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  <% } else if (o.status === "processing") { %>
+                    <span class="badge bg-primary">Processing</span>
+                  <% } else if (o.status === "completed") { %>
+                    <span class="badge bg-success">Completed</span>
+                  <% } else if (o.status === "cancelled") { %>
+                    <span class="badge bg-secondary">Cancelled</span>
+                  <% } else { %>
+                    <span class="badge bg-light text-dark"><%= o.status %></span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center text-muted">
+                Chưa có đơn hàng nào.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

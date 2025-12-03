@@ -39,7 +39,7 @@ router.post("/register", async (req, res) => {
         line1,
         city,
         phone,
-        isDefault: true
+        isDefault: true,
       };
       existing.isGuest = false;
       existing.provider = "local";
@@ -51,14 +51,14 @@ router.post("/register", async (req, res) => {
         fullName,
         defaultAddress: { fullName, line1, city, phone, isDefault: true },
         provider: "local",
-        isGuest: false
+        isGuest: false,
       });
     }
 
     req.session.user = {
       id: user._id.toString(),
       fullName: user.fullName,
-      role: user.role
+      role: user.role,
     };
 
     res.redirect("/");
@@ -77,13 +77,12 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-const user = await User.findOne({ email });
-if (!user || !user.passwordHash) {
-  return res.send("Sai email hoặc mật khẩu");
-}
+    const user = await User.findOne({ email });
+    if (!user || !user.passwordHash) {
+      return res.send("Sai email hoặc mật khẩu");
+    }
 
-const ok = await user.checkPassword(password);
-
+    const ok = await user.checkPassword(password);
     if (!ok) {
       return res.send("Sai email hoặc mật khẩu");
     }
@@ -91,20 +90,33 @@ const ok = await user.checkPassword(password);
     req.session.user = {
       id: user._id.toString(),
       fullName: user.fullName,
-      role: user.role
+      role: user.role,
     };
 
-    // ===> Thêm đoạn này <===
+    // 🔥 nếu là admin → vào dashboard
     if (user.role === "admin") {
       return res.redirect("/admin/dashboard");
     }
 
+    // user thường
     return res.redirect("/");
-
   } catch (err) {
     console.error(err);
     res.status(500).send("Lỗi server");
   }
+});
+
+// Hỗ trợ cả GET & POST cho logout
+router.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/");
+  });
+});
+
+router.post("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/");
+  });
 });
 
 // ================== HỒ SƠ / TÀI KHOẢN ==================
@@ -112,13 +124,10 @@ const ok = await user.checkPassword(password);
 // GET /auth/profile – hiển thị thông tin + đơn hàng
 router.get("/profile", requireLogin, async (req, res) => {
   try {
-    // user trong session chỉ để lấy id
     const sessionUser = req.session.user;
 
-    // Lấy user đầy đủ từ MongoDB (có email, defaultAddress,...)
     const dbUser = await User.findById(sessionUser.id).lean();
 
-    // Lấy tất cả đơn hàng của user
     const orders = await Order.find({ user: dbUser._id })
       .sort({ createdAt: -1 })
       .lean();
@@ -127,7 +136,7 @@ router.get("/profile", requireLogin, async (req, res) => {
       pending: [],
       processing: [],
       completed: [],
-      cancelled: []
+      cancelled: [],
     };
 
     orders.forEach((o) => {
@@ -138,7 +147,7 @@ router.get("/profile", requireLogin, async (req, res) => {
 
     res.render("auth/profile", {
       user: dbUser,
-      ordersByStatus
+      ordersByStatus,
     });
   } catch (err) {
     console.error("Lỗi lấy thông tin tài khoản:", err);

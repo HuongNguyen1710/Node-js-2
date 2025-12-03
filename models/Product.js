@@ -31,7 +31,9 @@ const productSchema = new mongoose.Schema({
   isNew: { type: Boolean, default: false },
   isBestSeller: { type: Boolean, default: false },
   ratingAverage: { type: Number, default: 0 },
-  ratingCount: { type: Number, default: 0 }
+  ratingCount: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true }
+
 }, {
   timestamps: true
 });
