@@ -1,0 +1,157 @@
+<% layout('admin/admin-layout', { title: 'Dashboard' }) %>
+
+<!-- STATS -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-sm-6">
+    <div class="card stat-card p-3">
+      <div class="stat-label">Tổng đơn hàng</div>
+      <div class="stat-value"><%= stats?.totalOrders || 128 %></div>
+      <div class="stat-change text-success">▲ +12% so với hôm qua</div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6">
+    <div class="card stat-card p-3">
+      <div class="stat-label">Doanh thu hôm nay</div>
+      <div class="stat-value">
+        <%= stats?.todayRevenue ? stats.todayRevenue.toLocaleString("vi-VN") + " ₫" : "32,500,000 ₫" %>
+      </div>
+      <div class="stat-change text-success">▲ Xu hướng tăng</div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6">
+    <div class="card stat-card p-3">
+      <div class="stat-label">Khách hàng mới</div>
+      <div class="stat-value"><%= stats?.newCustomers || 24 %></div>
+      <div class="stat-change text-muted">Trong 7 ngày gần nhất</div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6">
+    <div class="card stat-card p-3">
+      <div class="stat-label">Sản phẩm đang bán</div>
+      <div class="stat-value"><%= stats?.totalProducts || 87 %></div>
+      <div class="stat-change text-muted">Bao gồm tất cả phiên bản</div>
+    </div>
+  </div>
+</div>
+
+<!-- ROW 2: ORDERS + LOW STOCK -->
+<div class="row g-3">
+  <!-- Đơn hàng gần đây -->
+  <div class="col-lg-8">
+    <div class="card stat-card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title mb-0">Đơn hàng gần đây</h5>
+          <a href="/admin/orders" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+        </div>
+        <p class="text-muted" style="font-size:.9rem;">Những đơn hàng được tạo trong ngày gần đây.</p>
+
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Ngày</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (recentOrders.length > 0) { %>
+                <% recentOrders.forEach(order => { %>
+                  <tr>
+                    <td>#<%= order.code %></td>
+                    <td><%= order.customerName %></td>
+                    <td><%= order.createdAtFormatted %></td>
+                    <td><%= order.totalFormatted %></td>
+                    <td>
+                      <% if (order.status === "pending") { %>
+                        <span class="badge-status pending">Chờ xử lý</span>
+                      <% } else if (order.status === "completed") { %>
+                        <span class="badge-status completed">Hoàn thành</span>
+                      <% } else { %>
+                        <span class="badge-status cancelled">Đã hủy</span>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td>#ORD-00123</td>
+                  <td>Nguyễn Văn A</td>
+                  <td>03/12/2025</td>
+                  <td>15,900,000 ₫</td>
+                  <td><span class="badge-status completed">Hoàn thành</span></td>
+                </tr>
+                <tr>
+                  <td>#ORD-00124</td>
+                  <td>Trần Thị B</td>
+                  <td>03/12/2025</td>
+                  <td>9,500,000 ₫</td>
+                  <td><span class="badge-status pending">Chờ xử lý</span></td>
+                </tr>
+                <tr>
+                  <td>#ORD-00125</td>
+                  <td>Lê Văn C</td>
+                  <td>02/12/2025</td>
+                  <td>21,000,000 ₫</td>
+                  <td><span class="badge-status cancelled">Đã hủy</span></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sản phẩm sắp hết hàng -->
+  <div class="col-lg-4">
+    <div class="card stat-card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title mb-0">Sản phẩm sắp hết hàng</h5>
+          <a href="/admin/products" class="btn btn-sm btn-outline-primary">Quản lý</a>
+        </div>
+        <p class="text-muted" style="font-size:.9rem;">Các sản phẩm có tồn kho thấp.</p>
+
+        <ul class="list-group list-group-flush">
+          <% if (lowStockProducts.length > 0) { %>
+            <% lowStockProducts.forEach(p => { %>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="fw-semibold"><%= p.name %></div>
+                  <div class="text-muted" style="font-size:.8rem;">Mã: <%= p.code %></div>
+                </div>
+                <span class="badge bg-warning text-dark">
+                  <%= p.stock %> sản phẩm
+                </span>
+              </li>
+            <% }) %>
+          <% } else { %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <div class="fw-semibold">iPhone 13 128GB</div>
+                <div class="text-muted" style="font-size:.8rem;">Mã: IP13-128</div>
+              </div>
+              <span class="badge bg-warning text-dark">5 sản phẩm</span>
+            </li>
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <div class="fw-semibold">iPhone 14 Pro 256GB</div>
+                <div class="text-muted" style="font-size:.8rem;">Mã: IP14P-256</div>
+              </div>
+              <span class="badge bg-warning text-dark">3 sản phẩm</span>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>

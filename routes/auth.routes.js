@@ -77,12 +77,13 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user || !user.passwordHash) {
-      return res.send("Sai email hoặc mật khẩu");
-    }
+const user = await User.findOne({ email });
+if (!user || !user.passwordHash) {
+  return res.send("Sai email hoặc mật khẩu");
+}
 
-    const ok = await user.checkPassword(password);
+const ok = await user.checkPassword(password);
+
     if (!ok) {
       return res.send("Sai email hoặc mật khẩu");
     }
@@ -93,17 +94,17 @@ router.post("/login", async (req, res) => {
       role: user.role
     };
 
-    res.redirect("/");
+    // ===> Thêm đoạn này <===
+    if (user.role === "admin") {
+      return res.redirect("/admin/dashboard");
+    }
+
+    return res.redirect("/");
+
   } catch (err) {
     console.error(err);
     res.status(500).send("Lỗi server");
   }
-});
-
-router.post("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.redirect("/");
-  });
 });
 
 // ================== HỒ SƠ / TÀI KHOẢN ==================

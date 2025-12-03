@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || "Admin Dashboard" %></title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f4f6f9;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 240px;
+      height: 100vh;
+      background: #2d3436;
+      color: white;
+      padding: 1rem 0;
+    }
+
+    .sidebar .title {
+      font-size: 20px;
+      font-weight: bold;
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 20px;
+      color: #dfe6e9;
+      text-decoration: none;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: #636e72;
+      color: #fff;
+    }
+
+    .content {
+      margin-left: 240px;
+      padding: 20px;
+    }
+
+    .topbar {
+      background: #fff;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .stat-card {
+      border-radius: 12px;
+      border: none;
+      padding: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+      background: #fff;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .badge-status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="title">
+      <i class="bi bi-speedometer2"></i> Admin Panel
+    </div>
+
+    <a href="/admin/dashboard" class="active"><i class="bi bi-grid"></i> Dashboard</a>
+    <a href="/admin/products"><i class="bi bi-box"></i> Sản phẩm</a>
+    <a href="/admin/orders"><i class="bi bi-receipt"></i> Đơn hàng</a>
+    <a href="/admin/users"><i class="bi bi-people"></i> Người dùng</a>
+
+    <hr style="border-color: #555;">
+
+    <a href="/"><i class="bi bi-house"></i> Về trang chủ</a>
+    <a href="/logout"><i class="bi bi-box-arrow-left"></i> Đăng

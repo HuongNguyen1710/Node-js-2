@@ -41,19 +41,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+// ===== ROUTES =====
 const indexRoutes = require("./routes/index.routes");
 const productRoutes = require("./routes/product.routes");
 const cartRoutes = require("./routes/cart.routes");
 const authRoutes = require("./routes/auth.routes");
 const orderRoutes = require("./routes/order.routes");
+const adminRoutes = require("./routes/admin.routes");   // <-- THÊM NÈ !!!
 
 app.use("/", indexRoutes);
 app.use("/products", productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/auth", authRoutes);
 app.use("/orders", orderRoutes);
+app.use("/admin", adminRoutes);   // <-- THÊM NÈ !!!
 
+// ===== START SERVER =====
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
